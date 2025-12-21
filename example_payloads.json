@@ -1,0 +1,64 @@
+{
+    "auth_login": {
+        "email": "admin@webora.com",
+        "password": "admin123"
+    },
+    "project_create": {
+        "title": "E-Commerce Platform",
+        "category": "website",
+        "description": "Full-featured platform...",
+        "challenge": "Scaling for traffic...",
+        "techStack": [
+            "React",
+            "Django"
+        ],
+        "liveLink": "https://example.com",
+        "featured": true
+    },
+    "service_create": {
+        "title": "Website Development",
+        "icon": "FaLaptopCode",
+        "shortDescription": "Custom websites...",
+        "description": "We create stunning...",
+        "benefits": [
+            "Responsive",
+            "SEO Friendly"
+        ],
+        "process": [
+            {
+                "step": "Discovery",
+                "description": "Analyzing needs"
+            }
+        ],
+        "active": true
+    },
+    "blog_create": {
+        "title": "New Tech Trends",
+        "slug": "new-tech-trends",
+        "excerpt": "Short summary...",
+        "content": "Full Markdown or HTML content...",
+        "author": "Jane Doe",
+        "category": "Technology",
+        "tags": [
+            "Tech",
+            "2024"
+        ],
+        "readTime": "5 min read"
+    },
+    "message_create": {
+        "name": "John Smith",
+        "email": "john@example.com",
+        "subject": "Project Inquiry",
+        "message": "I need a website..."
+    },
+    "settings_update": {
+        "companyName": "Webora Solutions",
+        "tagline": "Building Futures",
+        "email": "contact@webora.com",
+        "phone": "+1 555-0123",
+        "social": {
+            "twitter": "https://twitter.com/webora",
+            "linkedin": "https://linkedin.com/company/webora"
+        }
+    }
+}
