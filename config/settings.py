@@ -19,8 +19,8 @@ SECRET_KEY = 'django-insecure-change-me-in-production'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
+    # 'localhost',
+    # '127.0.0.1',
     'weborabackend.onrender.com',
     'www.weborabackend.onrender.com',
 ]
