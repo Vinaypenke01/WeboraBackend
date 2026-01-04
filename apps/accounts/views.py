@@ -39,6 +39,7 @@ class LogoutView(APIView):
         return Response({"success": True}, status=status.HTTP_200_OK)
 
 class CreateAdminStep1View(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -67,6 +68,7 @@ class CreateAdminStep1View(APIView):
         }, status=status.HTTP_200_OK)
 
 class CreateAdminStep2View(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
