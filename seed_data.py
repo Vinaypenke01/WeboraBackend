@@ -12,10 +12,10 @@ from apps.blogs.models import Blog
 
 def seed():
     # 1. Create Superuser
-    if not User.objects.filter(email='admin@webora.com').exists():
+    if not User.objects.filter(email='admin@digitalcore.com').exists():
         User.objects.create_superuser(
             username='admin',
-            email='admin@webora.com',
+            email='admin@digitalcore.com',
             password='admin123'
         )
         print("Superuser created.")
@@ -23,15 +23,15 @@ def seed():
     # 2. Create Site Settings
     if not SiteSetting.objects.exists():
         SiteSetting.objects.create(
-            companyName="Webora Solutions",
+            companyName="DigitalCore Solutions",
             tagline="Building Your Digital Presence",
-            email="info@weborasolutions.com",
+            email="info@digitalcoresolutions.com",
             phone="+1 (555) 123-4567",
             address="123 Tech Street, San Francisco, CA 94102",
             social={
-                "twitter": "https://twitter.com/webora",
-                "linkedin": "https://linkedin.com/company/webora",
-                "github": "https://github.com/webora"
+                "twitter": "https://twitter.com/digitalcore",
+                "linkedin": "https://linkedin.com/company/digitalcore",
+                "github": "https://github.com/digitalcore"
             },
             hero={
                 "title": "Innovative Digital Solutions for Your Business",

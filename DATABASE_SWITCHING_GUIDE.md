@@ -1,6 +1,6 @@
 # Database Switching Guide
 
-This guide explains how to switch between SQLite and PostgreSQL databases in the WeboraBackend project.
+This guide explains how to switch between SQLite and PostgreSQL databases in the DigitalCoreBackend project.
 
 ## Current Configuration: SQLite
 
@@ -43,12 +43,12 @@ sudo service postgresql start
 Open PostgreSQL command line (psql) and run:
 
 ```sql
-CREATE DATABASE WeboraProduction;
+CREATE DATABASE DigitalCoreProduction;
 CREATE USER postgres WITH PASSWORD '123456';
 ALTER ROLE postgres SET client_encoding TO 'utf8';
 ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';
 ALTER ROLE postgres SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE WeboraProduction TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE DigitalCoreProduction TO postgres;
 ```
 
 Or use pgAdmin GUI tool to create the database.
@@ -64,7 +64,7 @@ DEBUG=True
 SECRET_KEY=django-insecure-change-me-in-production
 
 # PostgreSQL Configuration
-DB_NAME=WeboraProduction
+DB_NAME=DigitalCoreProduction
 DB_USER=postgres
 DB_PASSWORD=your_password_here
 DB_HOST=localhost

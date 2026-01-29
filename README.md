@@ -1,6 +1,6 @@
-# Webora Backend
+# DigitalCore Backend
 
-Production-ready Django backend for the Webora Solutions frontend.
+Production-ready Django backend for the DigitalCore Solutions frontend.
 
 ## Tech Stack
 -   **Language**: Python 3.12+

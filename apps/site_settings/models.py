@@ -1,9 +1,9 @@
 from django.db import models
 
 class SiteSetting(models.Model):
-    companyName = models.CharField(max_length=255, default="Webora Solutions")
+    companyName = models.CharField(max_length=255, default="DigitalCore Solutions")
     tagline = models.CharField(max_length=255, default="Building Your Digital Presence")
-    email = models.EmailField(default="info@weborasolutions.com")
+    email = models.EmailField(default="info@digitalcoresolutions.com")
     phone = models.CharField(max_length=50, default="+1 (555) 123-4567")
     address = models.TextField(default="123 Tech Street, San Francisco, CA 94102")
     social = models.JSONField(default=dict)
