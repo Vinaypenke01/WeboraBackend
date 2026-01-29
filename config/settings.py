@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 
-import dj_database_url
+# import dj_database_url  # Only needed for PostgreSQL - uncomment when switching
 
 # Load environment variables
 load_dotenv()
@@ -87,30 +87,41 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 
-
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-if DATABASE_URL:
-    # Render / Production
-    DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True,
-        )
+# SQLite Configuration (Currently Active)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # Local PostgreSQL via .env
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST", "localhost"),
-            "PORT": os.getenv("DB_PORT", "5432"),
-        }
-    }
+}
+
+# PostgreSQL Configuration (Commented for future use)
+# Uncomment the code below and comment the SQLite configuration above to switch to PostgreSQL
+# See DATABASE_SWITCHING_GUIDE.md for detailed instructions
+
+# DATABASE_URL = os.environ.get("DATABASE_URL")
+# 
+# if DATABASE_URL:
+#     # Render / Production with PostgreSQL
+#     DATABASES = {
+#         "default": dj_database_url.parse(
+#             DATABASE_URL,
+#             conn_max_age=600,
+#             ssl_require=True,
+#         )
+#     }
+# else:
+#     # Local PostgreSQL via .env
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": os.getenv("DB_NAME"),
+#             "USER": os.getenv("DB_USER"),
+#             "PASSWORD": os.getenv("DB_PASSWORD"),
+#             "HOST": os.getenv("DB_HOST", "localhost"),
+#             "PORT": os.getenv("DB_PORT", "5432"),
+#         }
+#     }
 
 
 
