@@ -19,8 +19,8 @@ SECRET_KEY = 'django-insecure-change-me-in-production'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    # 'localhost',
-    # '127.0.0.1',
+    'localhost',
+    '127.0.0.1',
     'digitalcorebackend.onrender.com',
     'www.digitalcorebackend.onrender.com',
 ]
@@ -50,6 +50,10 @@ INSTALLED_APPS = [
     'apps.blogs',
     'apps.contacts',
     'apps.site_settings',
+    'apps.pricing',
+    'apps.technologies',
+    'apps.testimonials',
+
 ]
 
 MIDDLEWARE = [

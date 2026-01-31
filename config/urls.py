@@ -11,6 +11,9 @@ urlpatterns = [
     path('api/v1/blogs/', include('apps.blogs.urls')),
     path('api/v1/messages/', include('apps.contacts.urls')),
     path('api/v1/settings/', include('apps.site_settings.urls')),
+    path('api/v1/pricing/', include('apps.pricing.urls')),
+    path('api/v1/technologies/', include('apps.technologies.urls')),
+    path('api/v1/testimonials/', include('apps.testimonials.urls')),
 ]
 
 if settings.DEBUG:
