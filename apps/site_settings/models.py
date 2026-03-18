@@ -1,7 +1,7 @@
 from django.db import models
 
 class SiteSetting(models.Model):
-    companyName = models.CharField(max_length=255, default="DigitalCore Solutions")
+    companyName = models.CharField(max_length=255, default="Digital Core")
     tagline = models.CharField(max_length=255, default="Building Your Digital Presence")
     email = models.EmailField(default="info@digitalcoresolutions.com")
     phone = models.CharField(max_length=50, default="+1 (555) 123-4567")

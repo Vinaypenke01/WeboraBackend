@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/v1/pricing/', include('apps.pricing.urls')),
     path('api/v1/technologies/', include('apps.technologies.urls')),
     path('api/v1/testimonials/', include('apps.testimonials.urls')),
+    path('api/v1/consents/', include('apps.consents.urls')),
 ]
 
 if settings.DEBUG:
