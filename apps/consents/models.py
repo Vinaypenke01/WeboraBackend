@@ -28,6 +28,10 @@ class Consent(models.Model):
     action_date = models.DateTimeField(null=True, blank=True)
     deployment_date = models.DateTimeField(null=True, blank=True, help_text="Actual project deployment date")
     admin_notes = models.TextField(blank=True, null=True)
+    
+    # Email tracking
+    is_final_email_sent = models.BooleanField(default=False)
+    final_email_sent_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']

@@ -13,7 +13,8 @@ class ConsentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'full_name', 'email', 'mobile_number', 'business_name', 
             'is_consented', 'version_number', 'created_at', 'status', 
-            'accepted_by', 'accepted_by_details', 'action_date', 'deployment_date', 'admin_notes'
+            'accepted_by', 'accepted_by_details', 'action_date', 'deployment_date', 'admin_notes',
+            'is_final_email_sent', 'final_email_sent_at'
         ]
         read_only_fields = ['id', 'created_at', 'accepted_by', 'action_date', 'status']
 

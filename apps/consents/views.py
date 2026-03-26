@@ -88,9 +88,16 @@ class ConsentViewSet(viewsets.ModelViewSet):
             if pdf_content:
                 filename = f"Consent_{consent.full_name.replace(' ', '_')}.pdf"
                 email.attach(filename, pdf_content, 'application/pdf')
-            email.send(fail_silently=True)
+                email.send(fail_silently=False)  # Don't fail silently here to catch errors
+                
+                consent.is_final_email_sent = True
+                consent.final_email_sent_at = timezone.now()
+                consent.save()
+                return True
+            return False
         except Exception as e:
             print(f"Error sending final PDF email: {e}")
+            return False
 
     def generate_pdf_content(self, consent):
         import base64
@@ -216,14 +223,33 @@ class ConsentViewSet(viewsets.ModelViewSet):
             consent.save()
             
             # Send Final PDF to Client
-            self.send_final_pdf_email(consent)
+            sent_status = self.send_final_pdf_email(consent)
             
             serializer = self.get_serializer(consent)
-            return Response(serializer.data)
+            return Response({
+                "message": "Consent accepted successfully.",
+                "email_sent": sent_status,
+                "data": serializer.data
+            })
         except Exception as e:
             import traceback
             print(f"CRITICAL ERROR in accept action: {str(e)}")
             print(traceback.format_exc())
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def resend_agreement(self, request, pk=None):
+        try:
+            consent = self.get_object()
+            if consent.status != 'ACCEPTED':
+                return Response({"error": "Cannot resend agreement for a consent that hasn't been accepted yet."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            sent_status = self.send_final_pdf_email(consent)
+            if sent_status:
+                return Response({"message": "Agreement email resent successfully."})
+            else:
+                return Response({"error": "Failed to send email. Please check your SMTP settings."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
