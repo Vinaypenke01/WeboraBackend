@@ -119,13 +119,29 @@ class ConsentViewSet(viewsets.ModelViewSet):
         expiry_date = expiry_date_obj.strftime("%B %d, %Y")
 
         # Logo handling: convert to base64
-        logo_path = os.path.join(django_settings.BASE_DIR.parent, 'Webora-Frontend', 'src', 'assets', 'logo.png')
+        # Try multiple potential paths for production resilience
+        possible_logo_paths = [
+            os.path.join(django_settings.BASE_DIR.parent, 'Webora-Frontend', 'src', 'assets', 'logo.png'),
+            os.path.join(django_settings.BASE_DIR, 'assets', 'logo.png'),
+            os.path.join(django_settings.BASE_DIR, 'logo.png'),
+            '/home/digitalcore/Webora-Frontend/src/assets/logo.png', # Potential PA path
+        ]
+        
+        logo_path = None
+        for p in possible_logo_paths:
+            if os.path.exists(p):
+                logo_path = p
+                break
+
         logo_base64 = ""
-        try:
-            with open(logo_path, "rb") as image_file:
-                logo_base64 = base64.b64encode(image_file.read()).decode('utf-8')
-        except Exception as e:
-            print(f"Error encoding logo: {e}")
+        if logo_path:
+            try:
+                with open(logo_path, "rb") as image_file:
+                    logo_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+            except Exception as e:
+                print(f"Error encoding logo: {e}")
+        else:
+            print("Logo not found in any expected location.")
 
         html_template = f"""
         <html>
@@ -181,7 +197,17 @@ class ConsentViewSet(viewsets.ModelViewSet):
                 <h2>5. CHANGE REQUEST POLICY</h2>
                 <p>5.1 Two changes per month. Minor modifications only.</p>
                 <h2>6. TURNAROUND TIME</h2>
-                <p>6.1 2 to 5 business days for change requests.</p>
+                <p>6.1 We strive for excellence and efficiency. The standard turnaround time for minor change requests or bug fixes is 2 to 5 business days.</p>
+                <h2>7. INTELLECTUAL PROPERTY</h2>
+                <p>7.1 Upon full and final payment, all rights, title, and interest in the Deliverables shall be transferred to the Client. 7.2 The Freelancer retains the right to use the Deliverables in their portfolio for promotional purposes.</p>
+                <h2>8. CONFIDENTIALITY</h2>
+                <p>8.1 Both parties agree to keep all project-related information, business secrets, and personal data confidential and not disclose it to any third party without prior written consent.</p>
+                <h2>9. LIMITATION OF LIABILITY</h2>
+                <p>9.1 In no event shall the Freelancer be liable for any indirect, special, or consequential damages. Total liability under this Agreement shall not exceed the fees paid for the specific services.</p>
+                <h2>10. TERMINATION</h2>
+                <p>10.1 Either party may terminate this Agreement with 15 days' written notice. 10.2 Upon termination, the Client shall pay for all work completed up to the termination date.</p>
+                <h2>11. GOVERNING LAW</h2>
+                <p>11.1 This Agreement shall be governed by and construed in accordance with the laws of India.</p>
                 <h2>15. ACCEPTANCE</h2>
                 <p>By signing below, both Parties acknowledge that they have read, understood, and agreed to the terms and conditions set forth in this Agreement.</p>
             </div>
@@ -250,7 +276,13 @@ class ConsentViewSet(viewsets.ModelViewSet):
             else:
                 return Response({"error": "Failed to send email. Please check your SMTP settings."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            import traceback
+            error_details = traceback.format_exc()
+            print(f"RESEND ERROR: {str(e)}\n{error_details}")
+            return Response({
+                "error": str(e),
+                "details": error_details if django_settings.DEBUG else "Check server logs for details."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def export_csv(self, request):
