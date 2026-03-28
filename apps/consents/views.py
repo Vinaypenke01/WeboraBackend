@@ -281,7 +281,7 @@ class ConsentViewSet(viewsets.ModelViewSet):
             print(f"RESEND ERROR: {str(e)}\n{error_details}")
             return Response({
                 "error": str(e),
-                "details": error_details if django_settings.DEBUG else "Check server logs for details."
+                "details": error_details
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
