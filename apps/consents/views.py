@@ -94,10 +94,12 @@ class ConsentViewSet(viewsets.ModelViewSet):
                 consent.final_email_sent_at = timezone.now()
                 consent.save()
                 return True
-            return False
+            raise ValueError("PDF Generation failed - result was None. Check server logs for PDF GENERATION ERROR.")
         except Exception as e:
-            print(f"Error sending final PDF email: {e}")
-            return False
+            import traceback
+            error_msg = f"ERROR sending final PDF email: {str(e)}\n{traceback.format_exc()}"
+            print(error_msg)
+            raise Exception(error_msg) # Re-raise to be caught by the action's try/except
 
     def generate_pdf_content(self, consent):
         import base64
