@@ -27,6 +27,7 @@ class Consent(models.Model):
     )
     action_date = models.DateTimeField(null=True, blank=True)
     deployment_date = models.DateTimeField(null=True, blank=True, help_text="Actual project deployment date")
+    maintenance_duration_months = models.IntegerField(default=12, help_text="Maintenance duration in months")
     admin_notes = models.TextField(blank=True, null=True)
     
     # Email tracking

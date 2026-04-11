@@ -72,15 +72,27 @@ class ConsentViewSet(viewsets.ModelViewSet):
             
         return d_date
 
+    def add_months(self, sourcedate, months):
+        import calendar
+        month = sourcedate.month - 1 + months
+        year = sourcedate.year + month // 12
+        month = month % 12 + 1
+        day = min(sourcedate.day, calendar.monthrange(year, month)[1])
+        return sourcedate.replace(year=year, month=month, day=day)
+
     def send_final_pdf_email(self, consent):
         from django.core.mail import EmailMessage
         from django.conf import settings
         
         # Ensure deployment_date is a datetime object for formatting
         d_date = self.get_deployment_datetime(consent)
+        
+        # Calculate Maintenance Period
+        duration = consent.maintenance_duration_months
+        expiry_date_obj = self.add_months(d_date, duration)
 
         subject = f"Final Agreement - {consent.business_name}"
-        body = f"Dear {consent.full_name},\n\nYour consent has been successfully processed and verified. Please find the finalized Terms and Conditions Agreement attached for your records.\n\nMaintenance Coverage: From {d_date.strftime('%B %d, %Y')} to {d_date.replace(year=d_date.year + 1).strftime('%B %d, %Y')}.\n\nBest regards,\nDigital Core Team"
+        body = f"Dear {consent.full_name},\n\nYour consent has been successfully processed and verified. Please find the finalized Terms and Conditions Agreement attached for your records.\n\nMaintenance Coverage: {duration} Months (From {d_date.strftime('%B %d, %Y')} to {expiry_date_obj.strftime('%B %d, %Y')}).\n\nBest regards,\nDigital Core Team"
         
         try:
             email = EmailMessage(subject, body, settings.DEFAULT_FROM_EMAIL, [consent.email])
@@ -115,7 +127,8 @@ class ConsentViewSet(viewsets.ModelViewSet):
         
         # Calculate Maintenance Period
         deployment_date_obj = self.get_deployment_datetime(consent)
-        expiry_date_obj = deployment_date_obj.replace(year=deployment_date_obj.year + 1)
+        duration = consent.maintenance_duration_months
+        expiry_date_obj = self.add_months(deployment_date_obj, duration)
         
         deployment_date = deployment_date_obj.strftime("%B %d, %Y")
         expiry_date = expiry_date_obj.strftime("%B %d, %Y")
@@ -184,20 +197,20 @@ class ConsentViewSet(viewsets.ModelViewSet):
             <div class="period-box">
                 <strong>SERVICE MAINTENANCE PERIOD:</strong><br/>
                 From: <strong>{deployment_date}</strong> (Deployment Date)<br/>
-                To: <strong>{expiry_date}</strong> (One Year Coverage)
+                To: <strong>{expiry_date}</strong> ({duration} Months Coverage)
             </div>
 
             <div class="content">
                 <h2>1. DEFINITIONS</h2>
-                <p>"Services" shall mean the design, development, deployment, and maintenance of the website. "Deliverables" shall mean all outputs provided by the Freelancer to the Client. "Maintenance Period" shall mean the period of one (1) year commencing from the date of deployment.</p>
+                <p>"Services" shall mean the design, development, deployment, and maintenance of the website. "Deliverables" shall mean all outputs provided by the Freelancer to the Client. "Maintenance Period" shall mean the period of {duration} months commencing from the date of deployment.</p>
                 <h2>2. SCOPE OF SERVICES</h2>
                 <p>2.1 The Freelancer agrees to provide website design and development services. 2.2 Any services not expressly included shall be deemed "Additional Services".</p>
                 <h2>3. PROJECT DELIVERY AND ACCEPTANCE</h2>
                 <p>3.1 The Deliverables shall be deemed accepted upon deployment or written confirmation. 3.2 Objections must be communicated prior to deployment.</p>
                 <h2>4. MAINTENANCE SERVICES</h2>
-                <p>4.1 One (1) year maintenance starting from {deployment_date}. 4.2 Includes: Bug fixes, content updates, UI adjustments.</p>
+                <p>4.1 {duration} months maintenance starting from {deployment_date}. 4.2 Includes: Bug fixes, content updates, UI adjustments.</p>
                 <h2>5. CHANGE REQUEST POLICY</h2>
-                <p>5.1 Two changes per month. Minor modifications only.</p>
+                <p>5.1 One change per month. Minor modifications only.</p>
                 <h2>6. TURNAROUND TIME</h2>
                 <p>6.1 We strive for excellence and efficiency. The standard turnaround time for minor change requests or bug fixes is 2 to 5 business days.</p>
                 <h2>7. INTELLECTUAL PROPERTY</h2>
@@ -247,6 +260,7 @@ class ConsentViewSet(viewsets.ModelViewSet):
             consent.accepted_by = request.user
             consent.action_date = timezone.now()
             consent.deployment_date = deployment_date
+            consent.maintenance_duration_months = int(request.data.get('maintenance_duration_months', 12))
             consent.admin_notes = request.data.get('admin_notes', '')
             consent.save()
             
